@@ -1,3 +1,3 @@
 console
 =======
-A home server for doing domestic stuffo
+A home server for doing domestic stuff.
