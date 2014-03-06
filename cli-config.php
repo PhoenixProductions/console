@@ -6,8 +6,21 @@
  * and open the template in the editor.
  */
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
-require_once('./lib/bootstrap.php');
-$em = $entityManager;
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
+
+$isDevMode = true;
+$config = Setup::createAnnotationMetadataConfiguration(array(__DIR__.'/src'), $isDevMode);
+
+$conn = array(
+    'driver' => 'pdo_mysql',
+    'user' => '',
+    'password' => '',
+    'dbname' => 'console'
+);
+        
+$em = EntityManager::create($conn, $config);    
+
 
 $helperset =  new \Symfony\Component\Console\Helper\HelperSet(array(
     'db' => new \Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($em->getConnection()),
