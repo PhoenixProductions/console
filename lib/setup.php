@@ -21,4 +21,3 @@ $OUTPUT = new OutputRenderer();
 $APPMANAGER = new \Console\Applications\AppManager($CFG);
 
 
-    

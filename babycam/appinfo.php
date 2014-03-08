@@ -11,7 +11,7 @@
  *
  * @author igs03102
  */
-class app_babycam implements App
+class app_babycam implements IApplication
 {
     //put your code here
     function getName() {

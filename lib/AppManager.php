@@ -74,10 +74,23 @@ class AppManager {
         }
         
     }
+
+    /**
+	* Returns the instance of the application
+	* *not* the DB record.
+	*/
+    static function getAppInstance($path) {
+	global $CFG;
+	$base = $CFG->dirroot;
+	require_once($base.'/'.$path.'/appinfo.php');
+	$classname = "app_{$path}";
+	$i = new $classname();
+	return $i;
+    }
 }
 
 interface IApplication {
     
-    public function get_name();
+    public function getName();
     
 }

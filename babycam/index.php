@@ -4,6 +4,6 @@ require('../config.php');
 require($CFG->dirroot.'/lib/setup.php');
 
 echo $OUTPUT->header();
-    <img id="streamimage" class="xform" src="http://192.168.0.23:9000/?action=stream" />
+echo  '<img id="streamimage" class="xform" src="http://192.168.0.23:9000/?action=stream" />';
 
 echo $OUTPUT->footer();

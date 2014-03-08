@@ -13,6 +13,7 @@
  */
 class OutputRenderer {
     public  $shownavbar = true;
+    public $showHome = true;
     function header() {
         $OUTPUT = $this;
         ob_start();

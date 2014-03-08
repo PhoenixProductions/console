@@ -1,31 +1,33 @@
 <?php
 ini_set('display_errors',1);
-require_once('../lib.php');
-?><html>
-<head>
-<style>
-<?php echo $OUTPUT->styles();?>
-.name {
-	margin-top:50%;
-	text-align:center;
+require_once('../config.php');
+require_once($CFG->dirroot.'/lib/setup.php');
+
+$OUTPUT->shownavbar = true;
+
+$app =\Console\Applications\AppManager::getAppInstance('shoppinglist');
+//require_once('appinfo.php');
+//$app = new app_shoppinglist(); 
+$apps =  $app->getPanels();
+
+
+$panel = '';
+foreach($apps as $app) {
+
+    $a = '';
+    $a .= "<a href='{$app['path']}'>";
+    $a .= "<div class='apppanel' style='";
+/*
+    if ($bgurl = $app->getPanelImage()) {
+        $a .= "background-image:url(\"{$CFG->wwwroot}{$app->getPath()}/{$bgurl}$
+    }
+*/
+    $a .= "'>";
+    $a .= "<div class='apptitle'>{$app['name']}</div>";
+    $a .= "</div>";
+    $a .="</a>";
+    $panel .= $a;
 }
-.box  {
-	display:inline-block;
-	vertical-align:middle;
-	height:200px;
-	width:200px;
-	float:left;
-	border:1px solid silver;
-}
-</style>
-<title>Shopping list</title>
-</head>
-<body>
-<?php echo $OUTPUT->header(true);?>
-<a href='print_list.php'>
-<div class='box'>
-<div class='name'>Print List</div>
-</div>
-</a>
-</body>
-</html>
+echo $OUTPUT->header();
+echo $panel;
+echo $OUTPUT->footer();

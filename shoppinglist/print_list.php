@@ -1,5 +1,5 @@
 <?php
-$devToken='';
+require('keys.php');
 require 'vendor/autoload.php';
 
 function get_param($name, $default) {
@@ -70,7 +70,7 @@ if ($tagguid === false) {
 }
 //$etagval = md5($deliverycount);
 //fetch shopping list notes:
-init_evernote($devToken);
+init_evernote($evernoteKey);
 
 //todo get notes in the "list" tag that are newer than the last printed date.
 
@@ -86,20 +86,16 @@ foreach($notes as $note) {
 	$body.=format_note($note);
 }
 $etagval = md5($devToken.$body);
-//set ETag
-//header('ETag:"' .$etagval.'"');
 
 $page =  get_page($body);
-//echo $page;	
-send_to_lp($page);
-header('Location:index.php');
-//"body{ font-size:12pt}\nen-todo { height:10px; width:10px;border: 1px solid black; display:inline-block; margin-right:3px}\n");
 
-function send_to_lp($html, $style = '', $dump = false) {
+send_to_lp($lpKey,$page);
+header('Location:'. $CFG->wwwroot.'/shoppinglist/');
+
+function send_to_lp($key,$html, $style = '', $dump = false) {
 	if ($html == '') {
 		return;
 	}
-	$key ='';
 	$ch = curl_init('http://remote.bergcloud.com/playground/direct_print/'.$key);
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, 'html='. urlencode($html));
