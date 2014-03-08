@@ -19,7 +19,7 @@ class app_shoppinglist implements \Console\Applications\IApplication
     }
     function getPanels() {
 	$panels = array();
-	$panels[] = array('name'=>'Print List','path'=>'print_list.php');
+	$panels[] = array('name'=>'Print Latest List','path'=>'print_list.php');
 	$panels[] = array('name'=>'List Notes','path'=>'listnotes.php');
 	return $panels;
     }
