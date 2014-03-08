@@ -1,0 +1,5 @@
+{
+ 	"require":{
+		"evernote/evernote":"1.23.*"
+	}
+}
