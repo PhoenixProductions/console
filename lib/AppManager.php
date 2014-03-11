@@ -48,7 +48,7 @@ class AppManager {
         if (count($newapps) ==0 ) {
             return false;
         }
-        var_dump($newapps);
+        //var_dump($newapps);
         return $newapps;
     }
     
@@ -69,6 +69,7 @@ class AppManager {
             $a = new \App();
             $a->setName($i->getName());
             $a->setPath($path);
+	    $a->setPanelImage('');
             $this->_config->em->persist($a);
             $this->_config->em->flush($a);
         }
@@ -92,5 +93,21 @@ class AppManager {
 interface IApplication {
     
     public function getName();
-    
+
+    public function dispatch($action);    
+}
+
+abstract class BaseApplication implements IApplication {
+	private $name;
+	public function getName() {
+		return $this->name;
+	}
+
+	public function dispatch($action) {
+		if (method_exists($this, 'dispatch_'.$action)) {
+			return call_user_func_array(array($this, 'dispatch_'.$action), array());
+		} 
+//		return './';
+		throw new \Exception('dispatch_'.$action .' does not exist');
+	}
 }

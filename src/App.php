@@ -61,4 +61,5 @@ class App {
     public function setPanelImage($path) {
         $this->panelimage = $path;
     }
+
 }

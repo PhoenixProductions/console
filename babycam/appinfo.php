@@ -11,7 +11,7 @@
  *
  * @author igs03102
  */
-class app_babycam implements IApplication
+class app_babycam implements \Console\Applications\IApplication
 {
     //put your code here
     function getName() {

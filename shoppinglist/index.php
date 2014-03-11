@@ -2,12 +2,14 @@
 ini_set('display_errors',1);
 require_once('../config.php');
 require_once($CFG->dirroot.'/lib/setup.php');
-
 $OUTPUT->shownavbar = true;
 
 $app =\Console\Applications\AppManager::getAppInstance('shoppinglist');
 //require_once('appinfo.php');
 //$app = new app_shoppinglist(); 
+
+
+
 $apps =  $app->getPanels();
 
 
