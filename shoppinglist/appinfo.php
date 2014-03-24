@@ -25,6 +25,7 @@ class app_shoppinglist extends \Console\Applications\BaseApplication implements 
     function getPanels() {
 	$panels = array();
 	$panels[] = array('name'=>'Print Latest List','path'=>'print_list.php', 'action'=>'printlist');
+//	$panels[] = array('name'=>'Print Latest List', 'action'=>'printlatest');
 	$panels[] = array('name'=>'List Notes','path'=>'listnotes.php', 'action'=>'listnotes');
 	return $panels;
     }
@@ -35,6 +36,51 @@ class app_shoppinglist extends \Console\Applications\BaseApplication implements 
 //	die();
 	$this->ENCLIENT = new \Evernote\Client(array('token' => $token, 'sandbox'=>false));
         $this->NS = $this->ENCLIENT->getNoteStore();
+    }
+
+    function dispatch_printlatest() {
+	global $OUTPUT;
+	$preview = false;//get_param('preview','string', true);
+	$tagguid = false;//get_config()->shoppinglist->tagguid;
+	ini_set('display_errors','1');
+	$this->init_evernote();
+//$tagguid = get_param('listtagguid', false);
+	if ($tagguid === false) {
+		$tagguid = 'e2684873-2d55-493f-bcd9-2cba4aee2f0b';
+//		$tagguid = '39c5c5d0-6ee5-457f-ba79-9b4481b59faf';
+	}
+
+//todo get notes in the "list" tag that are newer than the last printed date.
+
+	$filter = new EDAM\NoteStore\NoteFilter();
+	$filter->tagGuids = array($tagguid);
+	$filter->order = 2;	// order by updated 
+	$filter->ascending = false;
+
+	$notes = $this->get_notes($filter, 0,1);
+
+	$body ='<h1>Shopping List</h1><div>Printed '. date('r')."</div>";
+	foreach($notes->notes as $note) {
+		$n = $this->NS->getNote($note->guid, true,false,false,false);
+		$body.=$this->format_note($n);
+	}
+
+	//$page =  get_page($body);
+	$page =  $body;
+///var_dump($preview);
+	if ($preview) {
+		$OUTPUT->shownavbar = true;
+		echo $OUTPUT->header();
+		echo $body;;
+		echo $OUTPUT->footer();
+
+	} else {
+		$body = str_replace('<en-todo', '<div class="todobox"/><en-todo',$body);	
+		echo $body;
+//		send_to_lp($lpKey,$body);
+
+	}
+	exit();
     }
 
     function dispatch_listnotes() {
@@ -54,11 +100,17 @@ class app_shoppinglist extends \Console\Applications\BaseApplication implements 
 	if (!$note) {
 	$OUTPUT->shownavbar = true;
 	$notes = $this->get_notes($filter,$start);
+
+	$OUTPUT->addStylesheet('shoppinglist/styles.css');
+	$OUTPUT->addStylesheet('shoppinglist/lp_styles.css');
+
 	echo $OUTPUT->header();
 	echo "<p>Select a note to print</p>";
 	echo "<ul>";
 	foreach($notes->notes as $n) {
-		echo "<li><a href='?path=shoppinglist&action=listnotes&noteid={$n->guid}'>{$n->title}</a></li>";
+		echo "<li><a href='?app=shoppinglist&action=listnotes&noteid={$n->guid}'>{$n->title}</a>";
+		echo "<a href='?app=shoppinglist&action=viewnote&noteid={$n->guid}'>[View]</a>";
+		echo "</li>";
 	}
 	echo "</ul>";
 	echo $OUTPUT->footer();
@@ -68,14 +120,28 @@ class app_shoppinglist extends \Console\Applications\BaseApplication implements 
 	$n = $this->NS->getNote($note, true,false,false,false);
 
 	$body ='<h1>'.$n->title.'</h1><div>Printed '. date('r')."</div>";
-	$body.=format_note($n);
+	$body.= $this->format_note($n);
 
 	$page =  get_page($body);
 	$this->send_to_lp($page);
 	header('Location:'. $CFG->wwwroot.'/?app=shoppinglist'); //redirect to this app home page
 	}
     }
-
+    function dispatch_viewnote() {
+	global $OUTPUT;
+	$OUTPUT->shownavbar = true;
+	$OUTPUT->addStylesheet('shoppinglist/styles.css');
+	$this->init_evernote();
+	$noteid = get_param('noteid', 'string', false);
+	if ($noteid !== false) {
+		$n = $this->NS->getNote($noteid, true, false, false, false);
+		$body = $this->format_note($n);
+		echo $OUTPUT->header();
+		echo $body;
+		echo $OUTPUT->footer();
+		exit();
+	}
+    }
     function send_to_lp($html, $style = '', $dump = false) {
 	$key = get_config()->shoppinglist->lpkey;
 	if ($html == '') {
@@ -102,5 +168,13 @@ class app_shoppinglist extends \Console\Applications\BaseApplication implements 
                 exit();
         }
 
+    }
+    function format_note($note) {
+        $out = '';
+
+        $out .= "<h2>{$note->title}</h2>";
+        $out .= "{$note->content}";
+
+        return $out;
     }
 }

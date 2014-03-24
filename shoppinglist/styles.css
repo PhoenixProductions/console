@@ -1,0 +1,37 @@
+/*        #content  {
+                width:370px;
+/*              max-height:800px;
+                overflow:hidden;
+                border:1px solid silver;
+                padding:3px;
+        }
+*/
+/*
+en-note > div {
+	border: 1px solid silver;
+	margin-left:40px;
+	margin-right:40px;
+	margin-bottom:5px;
+}
+en-todo {
+	margin-left:20px;
+	padding-left:3px;
+	border-left:1px solid silver;	
+}
+*/
+en-todo {
+	border:1px solid black;
+	width:20px;
+	padding-left:30px;
+
+}
+/*
+        #toolong {
+                position:absolute;
+                width:384px;
+                margin:3px;
+                text-align:right;
+                background-color:white;
+                display:none;
+        }
+*/
